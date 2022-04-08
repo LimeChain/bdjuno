@@ -12,6 +12,13 @@ object_relationships:
         name: vesting_account
         schema: public
 array_relationships:
+- name: account_balances
+  using:
+    foreign_key_constraint_on:
+      column: address
+      table:
+        name: account_balance
+        schema: public
 - name: proposal_deposits
   using:
     foreign_key_constraint_on:
@@ -39,6 +46,13 @@ array_relationships:
       column: self_delegate_address
       table:
         name: validator_info
+        schema: public
+- name: vesting_accounts
+  using:
+    foreign_key_constraint_on:
+      column: address
+      table:
+        name: vesting_account
         schema: public
 select_permissions:
 - permission:

@@ -17,17 +17,48 @@ created using [Hasura](https://hasura.io/).
 To know how to setup and run BDJuno, please refer to
 the [docs website](https://docs.bigdipper.live/cosmos-based/parser/overview/).
 
-## Testing
-If you want to test the code, you can do so by running
-
-```shell
-$ make test-unit
+### Build the binary: `./build/bdjuno`
+```
+make build
 ```
 
-**Note**: Requires [Docker](https://docker.com).
+### Spin up Hasura and Postgres containers
+```
+docker-compose -f docker-compose-dev.yml up --build
+```
 
-This will:
-1. Create a Docker container running a PostgreSQL database.
-2. Run all the tests using that database as support.
+### Import the database schemas
+```
+docker cp ./database/schema your_postgres_container_id:/schema
+docker exec -it your_postgres_container_id bash
+cd schema
+psql -U postgres -d mantrachain -f ...
+```
 
 
+### Parse our dev genesis
+```
+./build/bdjuno parse genesis-file --home ./configuration
+```
+
+### Install Hasura cli
+Use the described method for your OS
+
+https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-cli/#install-hasura-cli
+
+### Import the metadata to the running Hasura instance
+```
+cd ./hasura
+hasura metadata apply --endpoint http://localhost:8080
+```
+Change `--endpoint` according to your current running Hasura instance
+
+### Start bdjuno Hasura actions
+```
+./build/bdjuno hasura-actions --home ./configuration
+```
+
+### Start bdjuno
+```
+./build/bdjuno start --home ./configuration
+```
